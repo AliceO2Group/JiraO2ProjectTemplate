@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ch.cern.alice.o2</groupId>
     <artifactId>o2-project-template</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <organization>
         <name>CERN - ALICE - O2</name>

@@ -28,6 +28,7 @@ import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenScheme;
 import com.atlassian.jira.issue.fields.screen.issuetype.IssueTypeScreenSchemeManager;
 import com.atlassian.jira.notification.NotificationSchemeManager;
 import com.atlassian.jira.permission.PermissionSchemeManager;
+import com.atlassian.jira.project.AssigneeTypes;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectCategory;
 import com.atlassian.jira.project.ProjectManager;
@@ -39,7 +40,7 @@ import com.atlassian.jira.workflow.WorkflowSchemeManager;
 /**
  * 
  * @author Barthélémy von Haller
- *
+ * 
  */
 public class O2AddProjectHook implements AddProjectHook {
 	private static final Logger LOGGER = LogManager.getLogger(O2AddProjectHook.class);
@@ -154,7 +155,6 @@ public class O2AddProjectHook implements AddProjectHook {
 		// so I'm iterating over all of them
 		FieldConfigScheme issueTypeScheme = null;
 		for (FieldConfigScheme scheme : issueTypeSchemeManager.getAllSchemes()) {
-			System.out.println(scheme.getName());
 			if (scheme.getName().equals(issueTypeSchemeName)) {
 				issueTypeScheme = scheme;
 				break;
@@ -181,29 +181,36 @@ public class O2AddProjectHook implements AddProjectHook {
 			LOGGER.error(String.format("[O2 project template] Failed to find the \"%s\" scheme. "
 					+ "It is not set for the new project [%s]", issueTypeSchemeName, project.getName()));
 		}
-		
+
 		// Roles
 		ProjectRoleService projectRoleService = ComponentAccessor.getComponentOfType(ProjectRoleService.class);
 		SimpleErrorCollection errorCollection = new SimpleErrorCollection();
 		projectRoleService.removeAllRoleActorsByProject(project, errorCollection);
-		
+
 		Collection<String> actorsAdmin = Arrays.asList("alice-jira-admins", "jira-administrators");
 		Collection<String> actorsDev = Arrays.asList("alice-member");
 		Collection<String> actorsUser = Arrays.asList("alice-member");
-		
+
 		ProjectRole projectRoleAdmin = projectRoleService.getProjectRoleByName("Administrators", errorCollection);
 		ProjectRole projectRoleDev = projectRoleService.getProjectRoleByName("Developers", errorCollection);
 		ProjectRole projectRoleUser = projectRoleService.getProjectRoleByName("Users", errorCollection);
-		projectRoleService.addActorsToProjectRole(actorsAdmin, projectRoleAdmin, project, "atlassian-group-role-actor", errorCollection);
-		projectRoleService.addActorsToProjectRole(actorsDev, projectRoleDev, project, "atlassian-group-role-actor", errorCollection);
-		projectRoleService.addActorsToProjectRole(actorsUser, projectRoleUser, project, "atlassian-group-role-actor", errorCollection);
+		projectRoleService.addActorsToProjectRole(actorsAdmin, projectRoleAdmin, project, "atlassian-group-role-actor",
+				errorCollection);
+		projectRoleService.addActorsToProjectRole(actorsDev, projectRoleDev, project, "atlassian-group-role-actor",
+				errorCollection);
+		projectRoleService.addActorsToProjectRole(actorsUser, projectRoleUser, project, "atlassian-group-role-actor",
+				errorCollection);
 
-		if(errorCollection.hasAnyErrors()) {
-			LOGGER.error(String.format("[O2 project template] Failed set roles to the new project [%s]", project.getName()));
+		if (errorCollection.hasAnyErrors()) {
+			LOGGER.error(String.format("[O2 project template] Failed set roles to the new project [%s]",
+					project.getName()));
 			for (String message : errorCollection.getErrorMessages()) {
 				System.out.println(message);
 			}
 		}
+
+		projectManager.updateProject(project, project.getName(), project.getDescription(), project.getLeadUserKey(),
+				project.getUrl(), AssigneeTypes.PROJECT_LEAD);
 
 		return ConfigureResponse.create().setRedirect(
 				"/plugins/servlet/project-config/" + project.getKey() + "/summary");
