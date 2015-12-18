@@ -1,0 +1,53 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/O2_logo_S_130822.png</param>
+        <param name="plugin-logo">images/O2_logo_S_130822.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="o2-project-template" location="o2-project-template"/>
+    
+    <!-- add our web resources -->
+    <web-resource key="o2-project-template-resources" name="o2-project-template Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <transformation extension="soy">
+            <transformer key="soyTransformer"/>
+        </transformation>
+        
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+        
+        <resource type="download" name="O2ProjectTemplate.soy.js" location="/soy/O2ProjectTemplate.soy"/>
+        <!--resource type="download" name="o2-project-template.css" location="/css/o2-project-template.css"/>
+        <resource type="download" name="o2-project-template.js" location="/js/o2-project-template.js"/-->
+		<resource type="download" name="images/" location="/images">
+            <param name="content-type" value="image/png; charset=binary"/>
+        </resource>
+        <context>o2-project-template</context>
+        <context>atl.general</context>
+        <context>atl.admin</context> 
+    </web-resource>
+     
+     <project-blueprint key="o2-project-template" weight="90">
+        <label key="o2.project.template.name"/>
+		<projectTypeKey>software</projectTypeKey>
+        <description key="o2.project.template.description"/>
+        <longDescription key="o2.project.template.description.long"/>
+
+		<!-- <infoPage soy-template="ch.cern.alice.o2.ProjectTemplate" /> -->
+
+        <icon location="images/O2_logo_S_130822.png"/>
+        <backgroundIcon location="images/O2_logo_S_130822background.png"/> 
+
+        <add-project>
+            <hook class="ch.cern.alice.o2.O2AddProjectHook"/>
+            <!-- descriptor file="/config/my-project-template-config.json"/-->
+        </add-project> 
+    </project-blueprint>
+    
+</atlassian-plugin>

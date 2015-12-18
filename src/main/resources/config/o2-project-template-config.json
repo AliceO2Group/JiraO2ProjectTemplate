@@ -1,0 +1,43 @@
+{
+    "issue-type-scheme":
+    {
+        "name": "my.project.template.issuetype.scheme.name",
+        "description": "my.project.template.issuetype.scheme.description",
+        "issue-types": [
+            {
+                "key": "issueType1",
+                "name": "New Feature",
+                "description": "A new feature of the product, which has yet to be developed.",
+                "icon": "/images/icons/newfeature.png",
+                "workflow": "wf1"
+            },
+            {
+                "key": "issueType2",
+                "name": "Bug",
+                "description": "A problem which impairs or prevents the functions of the product.",
+                "icon": "/images/icons/bug.png"
+            },
+            {
+                "key": "issueType3",
+                "name": "Sub-Task",
+                "description": "The sub-task of the issue",
+                "icon": "/images/icons/subtask_alternate.png",
+                "sub-task": true,
+                "workflow": "wf1"
+            }
+        ]
+    },
+    "workflow-scheme":
+    {
+        "name": "my.project.template.workflow.scheme.name",
+        "description": "my.project.template.workflow.scheme.description",
+        "default-workflow": "wf1",
+        "workflows": [
+            {
+                "key": "wf1",
+                "name": "my.project.template.workflow.wf1.name",
+                "workflow-bundle": "/wfb/Issue-Tracking-Workflow.jwb"
+            }
+        ]
+    }
+}
